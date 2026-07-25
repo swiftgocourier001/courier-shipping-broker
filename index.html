@@ -29,18 +29,18 @@
     <section class="max-w-2xl mx-auto -mt-16 px-6">
         <div class="bg-white rounded-3xl p-10 shadow-2xl text-center border border-gray-100">
             <h2 class="text-2xl font-bold text-brand mb-2">Live Tracking Portal</h2>
-            <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest">Enter Credentials to Verify Shipment</p>
+            <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest">ENTER SHIPMENT CREDENTIALS</p>
             
             <!-- Input 1: Contract ID -->
             <div class="text-left mb-4">
-                <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Contract ID</label>
-                <input type="text" id="contractInput" placeholder="e.g. UN-8849-2026" class="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:border-blue-900 transition font-semibold">
+                <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">CONTRACT ID</label>
+                <input type="text" id="contractInput" placeholder="ENTER CONTRACT ID" class="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:border-blue-900 transition font-semibold placeholder-gray-300">
             </div>
 
             <!-- Input 2: Tracking Code -->
             <div class="text-left mb-6">
-                <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Tracking Reference #</label>
-                <input type="text" id="trackInput" placeholder="e.g. TRK-99201-IS" class="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:border-blue-900 transition font-semibold">
+                <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">TRACKING REFERENCE #</label>
+                <input type="text" id="trackInput" placeholder="ENTER TRACKING CODE" class="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:border-blue-900 transition font-semibold placeholder-gray-300">
             </div>
             
             <button onclick="processTracking()" class="w-full btn-brand py-4 rounded-2xl font-bold text-lg shadow-lg uppercase tracking-wider">VERIFY SHIPMENT</button>
@@ -71,19 +71,11 @@
             
             resultBox.classList.remove('hidden');
 
-            // Define your valid Contract ID + Tracking Code pairs here
+            // Defined matching credentials here:
             const shipmentData = {
-                "UN-8849-2026_TRK-99201-IS": {
-                    destination: "Paris, France Hub",
-                    status: "IN TRANSIT (Class-A Cargo)"
-                },
-                "UN-8849-2026_ISFI-99": {
-                    destination: "Helsinki, Finland Center",
-                    status: "CLEARED FOR DELIVERY"
-                },
-                "CONTRACT-01_SG-NYC": {
-                    destination: "New York, USA Center",
-                    status: "IN TRANSIT"
+                "UN-8849-1906_TRK-99201-IS": {
+                    destination: "Class-A Cargo / Secure Clearance Portal",
+                    status: "CLEARED & IN TRANSIT"
                 }
             };
 
@@ -91,14 +83,14 @@
 
             if (!contract || !tracking) {
                 statusText.innerHTML = "<span class='text-red-500'><i class='fa fa-exclamation-circle'></i> INCOMPLETE CREDENTIALS</span>";
-                locationText.innerHTML = "Please provide both your Contract ID and Tracking Reference # to access clearance details.";
+                locationText.innerHTML = "Please enter both your Contract ID and Tracking Reference #.";
             } else if (shipmentData[lookupKey]) {
                 const data = shipmentData[lookupKey];
                 statusText.innerHTML = "<i class='fa fa-check-circle text-green-500 mr-2'></i> SHIPMENT VERIFIED";
                 locationText.innerHTML = `<strong>Destination:</strong> ${data.destination}<br><strong>Status:</strong> <span class='text-blue-900 font-bold'>${data.status}</span>`;
             } else {
                 statusText.innerHTML = "<span class='text-red-500'><i class='fa fa-times-circle'></i> ACCESS DENIED</span>";
-                locationText.innerHTML = "Invalid Contract ID or Tracking Reference #. Please check your credentials and try again.";
+                locationText.innerHTML = "Invalid Contract ID or Tracking Reference #. Please verify your credentials.";
             }
         }
     </script>
