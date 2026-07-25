@@ -17,7 +17,7 @@
 </head>
 <body>
 
-    <a href="https://wa.me/YOUR_NUMBER" class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/14234356200" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -28,16 +28,26 @@
 
     <section class="max-w-2xl mx-auto -mt-16 px-6">
         <div class="bg-white rounded-3xl p-10 shadow-2xl text-center border border-gray-100">
-            <h2 class="text-2xl font-bold text-brand mb-4">Live Tracking Portal</h2>
-            <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest">Enter Shipment ID to verify destination</p>
+            <h2 class="text-2xl font-bold text-brand mb-2">Live Tracking Portal</h2>
+            <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest">Enter Credentials to Verify Shipment</p>
             
-            <input type="text" id="trackInput" placeholder="ENTER TRACKING CODE..." class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl mb-4 outline-none focus:border-blue-900 transition text-center font-bold tracking-widest">
+            <!-- Input 1: Contract ID -->
+            <div class="text-left mb-4">
+                <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Contract ID</label>
+                <input type="text" id="contractInput" placeholder="e.g. UN-8849-2026" class="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:border-blue-900 transition font-semibold">
+            </div>
+
+            <!-- Input 2: Tracking Code -->
+            <div class="text-left mb-6">
+                <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">Tracking Reference #</label>
+                <input type="text" id="trackInput" placeholder="e.g. TRK-99201-IS" class="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:border-blue-900 transition font-semibold">
+            </div>
             
-            <button onclick="processTracking()" class="w-full btn-brand py-4 rounded-2xl font-bold text-lg shadow-lg">VERIFY SHIPMENT</button>
+            <button onclick="processTracking()" class="w-full btn-brand py-4 rounded-2xl font-bold text-lg shadow-lg uppercase tracking-wider">VERIFY SHIPMENT</button>
             
-            <div id="statusResult" class="mt-8 p-6 rounded-2xl hidden border-t-4 border-blue-900 bg-gray-50">
+            <div id="statusResult" class="mt-8 p-6 rounded-2xl hidden border-t-4 border-blue-900 bg-gray-50 text-left">
                 <div id="statusText" class="text-brand font-bold text-lg uppercase tracking-tight"></div>
-                <div id="locationText" class="text-gray-500 text-sm mt-2 italic"></div>
+                <div id="locationText" class="text-gray-600 text-sm mt-2"></div>
             </div>
         </div>
     </section>
@@ -52,30 +62,43 @@
 
     <script>
         function processTracking() {
-            const input = document.getElementById('trackInput').value.trim().toUpperCase();
+            const contract = document.getElementById('contractInput').value.trim().toUpperCase();
+            const tracking = document.getElementById('trackInput').value.trim().toUpperCase();
+            
             const resultBox = document.getElementById('statusResult');
             const statusText = document.getElementById('statusText');
             const locationText = document.getElementById('locationText');
             
             resultBox.classList.remove('hidden');
 
-            // Define your Destination Codes here
+            // Define your valid Contract ID + Tracking Code pairs here
             const shipmentData = {
-                "ISFI-99": "Destination: Paris, France Hub",
-                "SG-FIN-202": "Destination: Helsinki, Finland Center",
-                "SG-NYC": "Destination: New York, USA Center",
-                "SG-BER": "Destination: Berlin, Germany Depot"
+                "UN-8849-2026_TRK-99201-IS": {
+                    destination: "Paris, France Hub",
+                    status: "IN TRANSIT (Class-A Cargo)"
+                },
+                "UN-8849-2026_ISFI-99": {
+                    destination: "Helsinki, Finland Center",
+                    status: "CLEARED FOR DELIVERY"
+                },
+                "CONTRACT-01_SG-NYC": {
+                    destination: "New York, USA Center",
+                    status: "IN TRANSIT"
+                }
             };
 
-            if (shipmentData[input]) {
+            const lookupKey = `${contract}_${tracking}`;
+
+            if (!contract || !tracking) {
+                statusText.innerHTML = "<span class='text-red-500'><i class='fa fa-exclamation-circle'></i> INCOMPLETE CREDENTIALS</span>";
+                locationText.innerHTML = "Please provide both your Contract ID and Tracking Reference # to access clearance details.";
+            } else if (shipmentData[lookupKey]) {
+                const data = shipmentData[lookupKey];
                 statusText.innerHTML = "<i class='fa fa-check-circle text-green-500 mr-2'></i> SHIPMENT VERIFIED";
-                locationText.innerHTML = shipmentData[input] + " <br><span class='text-xs font-bold'>Current Status: IN TRANSIT</span>";
-            } else if (input === "") {
-                statusText.innerHTML = "ERROR";
-                locationText.innerHTML = "Please enter a tracking code.";
+                locationText.innerHTML = `<strong>Destination:</strong> ${data.destination}<br><strong>Status:</strong> <span class='text-blue-900 font-bold'>${data.status}</span>`;
             } else {
-                statusText.innerHTML = "INVALID CODE";
-                locationText.innerHTML = "No shipment found for this ID. Contact support.";
+                statusText.innerHTML = "<span class='text-red-500'><i class='fa fa-times-circle'></i> ACCESS DENIED</span>";
+                locationText.innerHTML = "Invalid Contract ID or Tracking Reference #. Please check your credentials and try again.";
             }
         }
     </script>
